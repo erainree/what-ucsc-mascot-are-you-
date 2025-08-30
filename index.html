@@ -1,0 +1,205 @@
+<!DOCTYPE html> <!--declared the doc type as HTML-->
+<html lang="en"> <!--starts the HTML doc and sets the language to English-->
+    <head>
+        <meta charset="UTF-8"> <!--tells the browser that the HTML doc is encoded in UTF-8-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--scaling on mobile devices-->
+        <title>What UCSC Mascot Are You?</title> <!--browser title-->
+        <link rel="icon" href="smaller_images/tomato.png" type="image/png"> 
+
+        <style> /* css start */
+            @font-face {
+                /*custom font from local file*/   
+                font-family: 'KodomoRounded';
+                src: url('fonts/kodomoRounded.otf') format('opentype');
+            }
+
+            body,html {
+            /*style for entire page body and HTML element*/
+                height: 100%; /*full height*/
+                margin: 0; /*sets all margins of an element to 0 meaning no space outside the element*/
+                display: flex; /*enable flexbox*/
+                align-items: center; /*centers items vertically*/
+                justify-content: center; /*centers items horizontally*/
+                font-family: 'KodomoRounded', sans-serif; /*apply custom font*/
+                background: #faf5e2; 
+            }
+
+            .container{
+            /*style for main conainer*/
+                width: 100vw; /* full viewpoer width */
+                height: calc(100vw * (16/9)); /* 9:16 ratio */
+                max-height: 150vh; /* full viewport heigt */
+                max-width: calc(100vh * (9/16));
+                padding: 20px;
+                border-radius: 10px; /*rounded corners*/
+                background: #b7dfef;
+                /* background: #e5f2d2 */
+                box-shadow: 0 0 10px rgba(0,0,0,0.1); /*soft shadow*/
+                text-align: center; /*center text*/
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                /* overflow-y: auto; */
+            }
+
+            .title {
+            /*title text style*/
+                font-size: 21px;
+                margin-bottom: 3vh; /*space below tile*/
+            }
+
+            .start-button {
+            /*start button style*/
+                font-size: 21px;
+                padding: 1vh 2vw;
+                /* border: 2px solid #fcf0c0 */
+                background-color: #f8eab6;
+                cursor: pointer;
+                text-decoration: none;
+                margin-bottom: 3vh; /*space below start button*/
+            }
+
+            .start-button:hover {
+            /*hover effect for start button*/
+                background-color: #ddd;
+            }
+
+            .game-container {
+            /*game container*/
+                display: none;
+                margin-top: 10%;
+                overflow: auto;
+            }
+
+            .choices {
+                display: flex;
+                flex-direction: column; /* arrage buttons into a column */
+                gap: 10px; /* space between the buttons */
+                margin-top: 2rem; /* space above the choices container */
+            }
+
+            .choice-button {
+                font-family: 'KodomoRounded', sans-serif;
+                font-size: 18px; /* adjusting font size to be smaller */
+                padding: 1vh 1vw; /* adjusting padding based on viewport heigh and width */
+                border: 0.5px solid #f2d79e; /* solid border */
+                background-color: #f6e9bd; /* white background */
+                cursor: pointer; /* pointer cursor on hove */
+                transition: background-color 0.3s, transform 0.3s; /* smooth transitions */
+            }
+
+            @media (hover: hover){
+                .choice-button:hover {
+                    background-color: #f3dba7; /* slightly darker background on hover */
+                }
+            }
+
+            .choice-button:focus {
+                background-color: #fff; /* sloghtly darker background on hover */
+            }
+
+            .story-text {
+                font-size: 20px;
+                margin-bottom: 1rem; /* spaces above the choice container */
+                /* padding-bottom: 5rem; */
+            }
+
+            .image-container {
+                max-width: 70%; /* setting max width of image container */
+                margin: 0 auto; /* center the image horizontally */
+            }
+
+            .image-container img {
+                width: 100%; /* making the image fill its container */
+                height: auto; /* maintain aspect ratio */
+                display: block; /* remove any extra space */
+                max-width: 100%; /* ensure that the image doesnt exceed its container */
+            }
+
+            .responsive-image {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /*newly added 7/17*/
+            #college-list li {
+                background-color: #f6f9ed;
+                margin: 4px 0;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                cursor: grab;
+                user-select: none;
+                font-size: 16px;
+            }
+
+            #college-list li:active {
+                cursor: grabbing;
+            }
+
+            #student-type-container{
+                display: none;
+            }
+            
+        </style>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="title">What UCSC Mascot Are You?</div>
+            <img id="homescreen" style="padding-bottom: 15px" src="smaller_images/homepage.png" alt="Story Image"/>
+            <a href="#" class="start-button" onclick="startRanking()">Start</a> <!--change to startRanking-->
+
+            <!--newly added 7/17-->
+            <div id="student-type-container">
+                <h2>Are you a Freshman or Transfer student?</h2>
+                <button class="choice-button" onclick="setStudentType('Freshman')">Freshman</button>
+                <button class="choice-button" onclick="setStudentType('Transfer')">Transfer</button>
+
+            </div>
+
+            <!--ranking container (newly added 7/17)-->
+            <div id="ranking-container" style="display: none;">
+                <h2 style="margin-bottom: 1rem;">
+                    You were just accepted into UCSC! Rank the college themes that best align with you!
+                </h2>
+
+                <ul id="college-list" style="list-style: none; padding: 0;">
+                    <li draggable="true">Cowell College - "The Pursuit of Truth in the Company of Friends"</li>
+                    <li draggable="true">Stevenson College - Self and Society</li>
+                    <li draggable="true">Crown College - Science, Technology, and Society</li>
+                    <li draggable="true">Merrill College - Cultural Identities and Global Consciousness</li>
+                    <li draggable="true">Porter College - Ars Longa, Vita Brevis: Life is Short, Art Endures</li>
+                    <li draggable="true">Kresge College - Power and Representation</li>
+                    <li draggable="true">Oakes College - Communicating Diversity for a Just Society</li>
+                    <li draggable="true">Rachel Carson College - Environment and Society</li>
+                    <li draggable="true">College Nine - International and Global Perspective</li>
+                    <li draggable="true">John R. Lewis College - Social Justice and Community</li>
+                </ul>
+
+                <button id="submit-ranking" type="button" style="margin-top: 1rem;">Submit Ranking</button>
+            </div>
+
+            <div class="game-container" id="game-container">
+                <div class="story-text" id="story-text"></div>
+                <div class="image-container">
+                    <img id="story-image" src="smaller_images/placeholder.png" alt="Story Image"/>
+                </div>
+                <div class="choices" id="choices"></div>
+            </div>
+        </div>
+        
+        <!--newly added 7/17-->
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+        <script src="js/collegeRanking.js"></script>
+        <script src="js/mainGame.js"></script>
+
+        <script async defer src="https://scripts.simpleanalyticscdn/latest.js"></script>
+
+        <noscript> 
+            <img src="https://queue.simpleanalyticscdn/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade"/> 
+        </noscript>
+    </body>
+</html>
